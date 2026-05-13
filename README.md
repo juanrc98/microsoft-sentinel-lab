@@ -65,5 +65,5 @@ the SC-200 learning paths and add new detections to the lab.
 **Juan Rodríguez Castellano** — SOC Analyst transitioning to Cloud
 Security in Microsoft environments.
 
-[LinkedIn](https://linkedin.com/in/juanrodriguez) ·
+[LinkedIn](https://www.linkedin.com/in/juan-rodriguez-castellano/) ·
 [Portfolio](https://juanrc98.github.io)
