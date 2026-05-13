@@ -1,0 +1,44 @@
+// ============================================================
+// Detection: New user account creation in Entra ID
+// ============================================================
+//
+// Purpose:
+//   Surfaces events where a new user account is created in the
+//   tenant. Account creation is a common persistence technique
+//   used by attackers after gaining initial access.
+//
+// MITRE ATT&CK:
+//   Tactic:    Persistence (TA0003)
+//   Technique: T1136 - Create Account
+//   Sub-tech:  T1136.003 - Cloud Account
+//
+// Data source:
+//   AuditLogs (Microsoft Entra ID)
+//
+// False positive considerations:
+//   - Bulk user provisioning during onboarding events
+//   - HR-driven account creation via SCIM provisioning
+//   - Automated provisioning from external identity providers
+//
+// Tuning recommendations:
+//   - Filter by InitiatedBy.user.userPrincipalName to exclude
+//     known provisioning service accounts
+//   - Apply time-of-day filters to highlight off-hours activity
+//
+// ============================================================
+
+AuditLogs
+| where OperationName == "Add user"
+| where Result == "success"
+| extend 
+    Actor = tostring(InitiatedBy.user.userPrincipalName),
+    TargetUser = tostring(TargetResources[0].userPrincipalName),
+    TargetDisplayName = tostring(TargetResources[0].displayName)
+| project 
+    TimeGenerated,
+    Actor,
+    TargetUser,
+    TargetDisplayName,
+    Result,
+    OperationName
+| order by TimeGenerated desc
