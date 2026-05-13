@@ -47,12 +47,14 @@ Resource Group → Log Analytics Workspace → Microsoft Sentinel
 | MITRE ATT&CK | Detection framework mapping |
 
 ## Repository Structure
+```
 microsoft-sentinel-lab/
 ├── docs/                  # Architecture, setup, lessons learned
 ├── kql-queries/           # Detection and hunting queries
 ├── analytics-rules/       # Sentinel Analytics Rules (JSON exports)
 ├── playbooks/             # Logic Apps playbooks (JSON exports)
 └── screenshots/           # Visual evidence of each milestone
+```
 ## Project Status
 
 🚧 **In active development.** Updated weekly as I progress through
