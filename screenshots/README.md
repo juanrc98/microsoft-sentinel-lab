@@ -17,6 +17,8 @@ order of the lab build-out.
 | 02 | `02-entra-id-connector-config.png` | Entra ID Data Connector configuration (Audit Logs only) |
 | 03 | `03-user-creation-maria-lopez.png` | Test user creation event |
 | 04 | `04-role-assignment-reports-reader.png` | Role assignment to test user |
+| 05 | `05-kql-detection-user-creation-result.png` |  First KQL detection executed against real audit data — user creation event |
+
 
 Screenshots are referenced from the corresponding documentation
 files in `docs/` and from inline references in `kql-queries/`.
