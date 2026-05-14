@@ -25,6 +25,10 @@
 //     known provisioning service accounts
 //   - Apply time-of-day filters to highlight off-hours activity
 //
+// Deployed as Analytics Rule:
+//   ../analytics-rules/entra-id-user-account-creation.md
+//   ../analytics-rules/entra-id-user-account-creation.json
+//
 // ============================================================
 
 AuditLogs
