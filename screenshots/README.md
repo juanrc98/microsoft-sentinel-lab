@@ -21,6 +21,7 @@ order of the lab build-out.
 | 06 | 06-analytics-rule-active.png | First Analytics Rule deployed: "Entra ID - User Account Creation" (T1136.003) |
 | 07 | 07-first-incident-generated.png | First incident generated automatically by Analytics Rule |
 | 08 | 08-incident-details-view.png | Incident details: entities, timeline, MITRE mapping |
+| 09 | `09-analytics-rules-active.png` | Two Analytics Rules active covering Persistence (T1136) and Privilege Escalation (T1098) |
 
 
 Screenshots are referenced from the corresponding documentation
