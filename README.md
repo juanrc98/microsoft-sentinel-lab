@@ -59,20 +59,27 @@ microsoft-sentinel-lab/
 
 ## Project Status
 
-🟢 **Active — v0.1**
+🟢 **Active — v0.3 (70% complete)**
 
-First end-to-end detection pipeline deployed and validated:
+End-to-end SOC pipeline operational, including detection engineering
+and SOAR automation:
 
 - Lab infrastructure live (Sentinel + Log Analytics + Entra ID connector)
-- First KQL detection authored, documented and version-controlled
-- First Analytics Rule deployed, mapped to MITRE ATT&CK T1136.003
-- Detection validated against controlled event generation
+- Two KQL detections authored, documented and version-controlled
+- Two Analytics Rules deployed:
+  - `Entra ID - User Account Creation` (MITRE T1136.003)
+  - `Entra ID - Role Assignment` (MITRE T1098.003)
+- Detections validated against controlled event generation
+- First incident reviewed end-to-end in the Defender portal
+- SOAR Playbook deployed: automated email notification on incident
+  creation, with dynamic incident metadata in the message body
 
 Next milestones:
-- Additional Entra ID detection rules (role changes, app registrations)
-- Windows Security Events ingestion (VM with Event Log forwarding)
-- First Logic Apps playbook for incident notification
-- Custom Workbook for executive view
+- Windows Security Events ingestion via Windows VM
+- Custom Workbook for SOC executive dashboard
+- Architecture diagram (draw.io)
+- Lessons learned documentation
+- README v1.0 final release
 
 Updated regularly as part of my SC-200 preparation (exam scheduled
 for July 2026).
