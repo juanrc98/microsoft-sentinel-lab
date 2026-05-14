@@ -18,6 +18,7 @@ order of the lab build-out.
 | 03 | `03-user-creation-maria-lopez.png` | Test user creation event |
 | 04 | `04-role-assignment-reports-reader.png` | Role assignment to test user |
 | 05 | `05-kql-detection-user-creation-result.png` |  First KQL detection executed against real audit data — user creation event |
+| 06 | 06-analytics-rule-active.png | First Analytics Rule deployed: "Entra ID - User Account Creation" (T1136.003) |
 
 
 Screenshots are referenced from the corresponding documentation
