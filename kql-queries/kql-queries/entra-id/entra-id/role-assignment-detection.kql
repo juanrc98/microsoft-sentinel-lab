@@ -1,0 +1,54 @@
+// ============================================================
+// Detection: Role assignment in Entra ID
+// ============================================================
+//
+// Purpose:
+//   Surfaces events where a user is added to a directory role
+//   in Microsoft Entra ID. Role assignment — especially to 
+//   privileged roles — is a critical indicator of privilege 
+//   escalation activity.
+//
+// MITRE ATT&CK:
+//   Tactic:    Privilege Escalation (TA0004)
+//   Technique: T1098 - Account Manipulation
+//   Sub-tech:  T1098.003 - Additional Cloud Roles
+//
+// Data source:
+//   AuditLogs (Microsoft Entra ID)
+//
+// False positive considerations:
+//   - Legitimate onboarding workflows assigning standard roles
+//   - HR-driven automation via SCIM or external identity providers
+//   - Help-desk staff temporarily granting roles for support cases
+//
+// Tuning recommendations:
+//   - Filter by RoleName to focus on privileged roles only
+//     (Global Administrator, Privileged Role Administrator, etc.)
+//   - Correlate with recent account creation (combination of T1136 
+//     + T1098 = strong persistence + escalation indicator)
+//   - Escalate severity if the target user account is less than 
+//     1 hour old at time of role assignment
+//
+// Deployed as Analytics Rule:
+//   ../analytics-rules/entra-id-role-assignment.md
+//   ../analytics-rules/entra-id-role-assignment.json
+//
+// ============================================================
+
+AuditLogs
+| where OperationName == "Add member to role"
+| where Result == "success"
+| extend 
+    Actor = tostring(InitiatedBy.user.userPrincipalName),
+    TargetUser = tostring(TargetResources[0].userPrincipalName),
+    TargetDisplayName = tostring(TargetResources[0].displayName),
+    RoleName = tostring(TargetResources[0].modifiedProperties[1].newValue)
+| project 
+    TimeGenerated,
+    Actor,
+    TargetUser,
+    TargetDisplayName,
+    RoleName,
+    Result,
+    OperationName
+| order by TimeGenerated desc
