@@ -6,7 +6,7 @@
 ![Azure](https://img.shields.io/badge/Azure-0078D4?style=flat&logo=microsoft-azure&logoColor=white)
 ![Sentinel](https://img.shields.io/badge/Microsoft%20Sentinel-00BCF2?style=flat&logo=microsoft&logoColor=white)
 ![KQL](https://img.shields.io/badge/KQL-0078D4?style=flat&logo=microsoft&logoColor=white)
-![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
+![Status](https://img.shields.io/badge/Status-v0.1-green)
 
 ## Overview
 
@@ -47,6 +47,7 @@ Resource Group → Log Analytics Workspace → Microsoft Sentinel
 | MITRE ATT&CK | Detection framework mapping |
 
 ## Repository Structure
+
 ```
 microsoft-sentinel-lab/
 ├── docs/                  # Architecture, setup, lessons learned
@@ -55,10 +56,26 @@ microsoft-sentinel-lab/
 ├── playbooks/             # Logic Apps playbooks (JSON exports)
 └── screenshots/           # Visual evidence of each milestone
 ```
+
 ## Project Status
 
-🚧 **In active development.** Updated weekly as I progress through
-the SC-200 learning paths and add new detections to the lab.
+🟢 **Active — v0.1**
+
+First end-to-end detection pipeline deployed and validated:
+
+- Lab infrastructure live (Sentinel + Log Analytics + Entra ID connector)
+- First KQL detection authored, documented and version-controlled
+- First Analytics Rule deployed, mapped to MITRE ATT&CK T1136.003
+- Detection validated against controlled event generation
+
+Next milestones:
+- Additional Entra ID detection rules (role changes, app registrations)
+- Windows Security Events ingestion (VM with Event Log forwarding)
+- First Logic Apps playbook for incident notification
+- Custom Workbook for executive view
+
+Updated regularly as part of my SC-200 preparation (exam scheduled
+for July 2026).
 
 ## About me
 
