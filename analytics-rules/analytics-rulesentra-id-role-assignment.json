@@ -1,0 +1,81 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/d4405ec5-bcbb-4960-afc2-80af721ef791')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/d4405ec5-bcbb-4960-afc2-80af721ef791')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2023-12-01-preview",
+            "properties": {
+                "displayName": "Entra ID - Role Assignment",
+                "description": "Detects successful assignment of a directory role to a user in \nMicrosoft Entra ID. Role assignment, especially to privileged \nroles, is a strong indicator of privilege escalation (MITRE T1098 \n- Account Manipulation).",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "AuditLogs\r\n| where OperationName == \"Add member to role\"\r\n| where Result == \"success\"\r\n| extend \r\n    Actor = tostring(InitiatedBy.user.userPrincipalName),\r\n    TargetUser = tostring(TargetResources[0].userPrincipalName),\r\n    TargetDisplayName = tostring(TargetResources[0].displayName),\r\n    RoleName = tostring(TargetResources[0].modifiedProperties[1].newValue)\r\n| project \r\n    TimeGenerated,\r\n    Actor,\r\n    TargetUser,\r\n    TargetDisplayName,\r\n    RoleName,\r\n    Result,\r\n    OperationName",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "startTimeUtc": null,
+                "tactics": [
+                    "PrivilegeEscalation"
+                ],
+                "techniques": [
+                    "T1098"
+                ],
+                "subTechniques": [
+                    "T1098.003"
+                ],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "TargetUser"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "Actor"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": null
+            }
+        }
+    ]
+}
