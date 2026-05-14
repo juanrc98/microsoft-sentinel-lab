@@ -1,0 +1,83 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/f9ebe855-c3f7-4612-a8b7-795dc03d4142')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/f9ebe855-c3f7-4612-a8b7-795dc03d4142')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2023-12-01-preview",
+            "properties": {
+                "displayName": "Entra ID - User Account Creation",
+                "description": "Detects successful creation of new user accounts in Microsoft Entra ID. \nAccount creation outside business hours or in bulk may indicate \npersistence attempts (MITRE T1136 - Create Account).",
+                "severity": "Low",
+                "enabled": true,
+                "query": "AuditLogs\r\n| where OperationName == \"Add user\"\r\n| where Result == \"success\"\r\n| extend \r\n    Actor = tostring(InitiatedBy.user.userPrincipalName),\r\n    TargetUser = tostring(TargetResources[0].userPrincipalName),\r\n    TargetDisplayName = tostring(TargetResources[0].displayName)\r\n| project \r\n    TimeGenerated,\r\n    Actor,\r\n    TargetUser,\r\n    TargetDisplayName,\r\n    Result,\r\n    OperationName",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "PT1H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "startTimeUtc": null,
+                "tactics": [
+                    "Persistence"
+                ],
+                "techniques": [
+                    "T1136"
+                ],
+                "subTechniques": [
+                    "T1136.003"
+                ],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "AlertPerResult"
+                },
+                "alertDetailsOverride": {
+                    "alertDynamicProperties": []
+                },
+                "customDetails": {},
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "TargetUser"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "Actor"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": null
+            }
+        }
+    ]
+}
