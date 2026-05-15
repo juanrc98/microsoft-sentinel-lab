@@ -1,23 +1,47 @@
 # KQL Queries
 
-Kusto Query Language (KQL) queries developed throughout the lab,
-organized by data source.
+This folder contains all KQL queries authored in the lab, 
+organised by data source and purpose.
 
-## Structure
+## Folder structure
+kql-queries/
+└── entra-id/
+├── user-creation-detection.kql       (deployed as Analytics Rule)
+├── role-assignment-detection.kql     (deployed as Analytics Rule)
+└── service-principal-creation.kql    (hunting query)
+## Detection vs Hunting
 
-- `entra-id/` — Queries against Microsoft Entra ID logs (SigninLogs, AuditLogs)
-- `windows/` — Queries against Windows Security Events
-- `hunting/` — Threat hunting queries (proactive, not tied to alerts)
+Two categories of queries live here:
 
-## Naming convention
+**Detection queries** are deployed as Sentinel Analytics Rules. 
+They run on a schedule, generate alerts and create incidents 
+automatically. They are tuned for high-confidence, low-false-
+positive output.
 
-Each `.kql` file follows the pattern:
+**Hunting queries** are analyst-driven. They surface patterns 
+that warrant human review but are not yet mature enough (or 
+high-signal enough) to fire automated alerts. Hunting queries 
+typically graduate to detection rules once validated against 
+real data and tuned for noise.
 
-`{detection-name}.kql`
+## Current state
 
-Every query includes inline comments with:
+| Query | Type | MITRE | Status |
+|---|---|---|---|
+| user-creation-detection | Detection | T1136.003 | Deployed (Low) |
+| role-assignment-detection | Detection | T1098.003 | Deployed (Medium) |
+| service-principal-creation | Hunting | T1098.001 | Manual hunt |
 
-- Purpose of the detection
-- Threshold and time window rationale
-- MITRE ATT&CK technique mapping (when applicable)
-- Known limitations or false positive considerations
+## Methodology
+
+Every query follows the same authoring flow:
+
+1. Generate a controlled event matching the target activity
+2. Inspect the raw log in Log Analytics to understand the schema
+3. Write a minimal query that surfaces the event without noise
+4. Document false-positive scenarios and tuning recommendations
+5. If applicable, promote to Analytics Rule with entity mapping
+6. Validate end-to-end with another controlled event
+
+This is the same flow used in production detection engineering 
+teams, scaled down to lab volume.
