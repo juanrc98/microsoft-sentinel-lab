@@ -84,30 +84,30 @@ microsoft-sentinel-lab/
 
 ## Project Status
 
-🟢 **Active — v0.3 (70% complete)**
+## Project Status
 
-End-to-end SOC pipeline operational, including detection engineering
-and SOAR automation:
+🟢 **Released — v1.0 (100% complete)**
 
-- Lab infrastructure live (Sentinel + Log Analytics + Entra ID connector)
-- Two KQL detections authored, documented and version-controlled
-- Two Analytics Rules deployed:
-  - `Entra ID - User Account Creation` (MITRE T1136.003)
-  - `Entra ID - Role Assignment` (MITRE T1098.003)
-- One hunting query (Service Principal Creation, MITRE T1098.001)
-- Detections validated against controlled event generation
-- First incident reviewed end-to-end in the Defender portal
-- SOAR Playbook deployed: automated email notification on incident
-  creation, with dynamic incident metadata in the message body
-- Custom Workbook for SOC overview (5 tiles)
+End-to-end SOC pipeline operational, including detection engineering, 
+hunting and SOAR automation:
 
-Next milestones:
-- Lessons learned documentation
-- README v1.0 final release
+- Lab infrastructure live: Sentinel + Log Analytics Workspace + Entra ID
+- Defender XDR portal integrated as the unified SOC console
+- Two KQL detections deployed as Sentinel Analytics Rules:
+  - `Entra ID - User Account Creation` (MITRE T1136.003, Low)
+  - `Entra ID - Role Assignment` (MITRE T1098.003, Medium)
+- One hunting query: `Service Principal Creation` (MITRE T1098.001)
+- Detections validated end-to-end against controlled events
+- First incident reviewed in the Defender portal with full entity mapping
+- SOAR Playbook deployed with dynamic incident metadata in notifications
+- Custom Workbook (`Identity Threat Overview`) with five tiles for SOC 
+  visibility
+- Architecture diagram, documentation, screenshots, JSON exports and 
+  lessons-learned retrospective all version-controlled
 
-Updated regularly as part of my SC-200 preparation (exam scheduled
-for July 2026).
-
+This release marks the end of the initial build phase. Future commits 
+will extend the lab with additional data sources and detections as part 
+of ongoing SC-200 preparation (exam scheduled for July 2026).
 ## About me
 
 **Juan Rodríguez Castellano** — SOC Analyst transitioning to Cloud
