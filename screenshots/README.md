@@ -24,6 +24,9 @@ order of the lab build-out.
 | 09 | `09-analytics-rules-active.png` | Two Analytics Rules active covering Persistence (T1136) and Privilege Escalation (T1098) |
 | 10 | 10-playbook-email-notification.png | SOAR Playbook: automated email notification with incident details |
 | 11 | `11-hunting-query-validated.png` | Service Principal Creation hunting query (T1098.001) validated with controlled event |
+| 12 | `12-workbook-overview-top.png` | Custom Workbook: Identity Threat Overview - main dashboard tiles |
+| 13 | `13-workbook-mitre-incidents.png` | Custom Workbook: MITRE ATT&CK coverage and incident metrics |
+| 14 | `14-security-incidents-by-severity.png` | Security incidents distribution by severity |
 
 
 
