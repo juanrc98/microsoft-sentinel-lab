@@ -4,11 +4,14 @@ This folder contains all KQL queries authored in the lab,
 organised by data source and purpose.
 
 ## Folder structure
+
+```text
 kql-queries/
 └── entra-id/
-├── user-creation-detection.kql       (deployed as Analytics Rule)
-├── role-assignment-detection.kql     (deployed as Analytics Rule)
-└── service-principal-creation.kql    (hunting query)
+    ├── user-creation-detection.kql       (deployed as Analytics Rule)
+    ├── role-assignment-detection.kql     (deployed as Analytics Rule)
+    └── service-principal-creation.kql    (hunting query)
+```
 ## Detection vs Hunting
 
 Two categories of queries live here:
