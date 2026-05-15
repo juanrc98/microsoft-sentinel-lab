@@ -33,6 +33,27 @@ Resource Group → Log Analytics Workspace → Microsoft Sentinel
 → Analytics Rules (KQL) → Incidents → Playbooks (Logic Apps)
 
 > Detailed architecture diagram in `docs/01-architecture.md`
+>
+> ```mermaid
+flowchart LR
+    A[Microsoft Entra ID<br/>Audit Logs] -->|Data Connector| B[Log Analytics Workspace<br/>lab-sentinel]
+    B --> C[Microsoft Sentinel]
+    C --> D[Analytics Rules]
+    D --> D1[User Account Creation<br/>T1136.003 · Low]
+    D --> D2[Role Assignment<br/>T1098.003 · Medium]
+    D1 --> E[Incident<br/>+ Entity Mapping]
+    D2 --> E
+    E --> F[Defender XDR Portal]
+    E -->|Trigger| G[Playbook<br/>Logic App]
+    G --> H[Email Notification<br/>Outlook.com]
+    
+    style A fill:#0078D4,color:#fff
+    style B fill:#50A0DC,color:#fff
+    style C fill:#1F6FEB,color:#fff
+    style E fill:#FF6B6B,color:#fff
+    style G fill:#FFB84D,color:#fff
+    style H fill:#4CAF50,color:#fff
+```
 
 ## Tech Stack
 
