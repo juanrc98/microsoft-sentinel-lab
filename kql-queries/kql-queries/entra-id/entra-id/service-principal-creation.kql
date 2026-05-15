@@ -1,0 +1,53 @@
+// ============================================================
+// Detection: Service Principal / Application creation
+// ============================================================
+//
+// Purpose:
+//   Surfaces events where a new application (service principal)
+//   is registered in Microsoft Entra ID. Adversaries commonly
+//   register OAuth applications post-compromise to maintain 
+//   persistent access independent of the original user account.
+//   This persistence technique survives password resets and MFA
+//   enforcement on the original identity.
+//
+// MITRE ATT&CK:
+//   Tactic:    Persistence (TA0003) / Privilege Escalation (TA0004)
+//   Technique: T1098 - Account Manipulation
+//   Sub-tech:  T1098.001 - Additional Cloud Credentials
+//
+// Data source:
+//   AuditLogs (Microsoft Entra ID)
+//
+// False positive considerations:
+//   - Legitimate developer activity (IT teams registering apps)
+//   - Approved third-party SaaS integrations during onboarding
+//   - Microsoft first-party applications (already filtered below)
+//
+// Tuning recommendations:
+//   - Maintain an allowlist of approved actors authorised to 
+//     register applications
+//   - Correlate with sign-in patterns: a new app + first sign-in
+//     from a new geography = high-confidence compromise indicator
+//   - Escalate severity if the application is granted admin
+//     consent within a short timeframe of creation
+//   - Monitor newly created apps for OAuth permission grants
+//     (next detection in the backlog)
+//
+// ============================================================
+
+AuditLogs
+| where OperationName in ("Add application", "Add service principal")
+| where Result == "success"
+| extend
+    Actor = tostring(InitiatedBy.user.userPrincipalName),
+    AppDisplayName = tostring(TargetResources[0].displayName),
+    AppId = tostring(TargetResources[0].id)
+| where isnotempty(Actor)  // exclude Microsoft first-party automation
+| project
+    TimeGenerated,
+    Actor,
+    AppDisplayName,
+    AppId,
+    OperationName,
+    Result
+| order by TimeGenerated desc
