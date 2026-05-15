@@ -6,7 +6,7 @@
 ![Azure](https://img.shields.io/badge/Azure-0078D4?style=flat&logo=microsoft-azure&logoColor=white)
 ![Sentinel](https://img.shields.io/badge/Microsoft%20Sentinel-00BCF2?style=flat&logo=microsoft&logoColor=white)
 ![KQL](https://img.shields.io/badge/KQL-0078D4?style=flat&logo=microsoft&logoColor=white)
-![Status](https://img.shields.io/badge/Status-v0.1-green)
+![Status](https://img.shields.io/badge/Status-v0.3--70%25-green)
 
 ## Overview
 
@@ -28,13 +28,7 @@ Security Operations Analyst** certification, scheduled for July 2026.
 
 ## Architecture
 
-Resource Group → Log Analytics Workspace → Microsoft Sentinel
-→ Data Connectors (Entra ID, Windows Security Events)
-→ Analytics Rules (KQL) → Incidents → Playbooks (Logic Apps)
-
-> Detailed architecture diagram in `docs/01-architecture.md`
->
-> ```mermaid
+```mermaid
 flowchart LR
     A[Microsoft Entra ID<br/>Audit Logs] -->|Data Connector| B[Log Analytics Workspace<br/>lab-sentinel]
     B --> C[Microsoft Sentinel]
@@ -46,7 +40,7 @@ flowchart LR
     E --> F[Defender XDR Portal]
     E -->|Trigger| G[Playbook<br/>Logic App]
     G --> H[Email Notification<br/>Outlook.com]
-    
+
     style A fill:#0078D4,color:#fff
     style B fill:#50A0DC,color:#fff
     style C fill:#1F6FEB,color:#fff
@@ -55,6 +49,15 @@ flowchart LR
     style H fill:#4CAF50,color:#fff
 ```
 
+End-to-end flow: identity events captured in Entra ID flow through
+the data connector into the Log Analytics Workspace, where Microsoft
+Sentinel evaluates them via custom Analytics Rules. Matched events
+become incidents with mapped entities, visible in the Defender XDR
+portal and automatically triggering the SOAR Playbook for email
+notification.
+
+For deeper detail on each component, see `docs/01-architecture.md`.
+
 ## Tech Stack
 
 | Component | Purpose |
@@ -62,7 +65,7 @@ flowchart LR
 | Microsoft Azure | Cloud infrastructure |
 | Microsoft Sentinel | Cloud-native SIEM & SOAR |
 | Log Analytics Workspace | Log ingestion and storage |
-| Microsoft Entra ID | Identity logs (SignIn, Audit) |
+| Microsoft Entra ID | Identity logs (Audit Logs) |
 | KQL | Detection and hunting queries |
 | Logic Apps | SOAR automation |
 | MITRE ATT&CK | Detection framework mapping |
@@ -75,6 +78,7 @@ microsoft-sentinel-lab/
 ├── kql-queries/           # Detection and hunting queries
 ├── analytics-rules/       # Sentinel Analytics Rules (JSON exports)
 ├── playbooks/             # Logic Apps playbooks (JSON exports)
+├── workbooks/             # Sentinel Workbooks (JSON exports)
 └── screenshots/           # Visual evidence of each milestone
 ```
 
@@ -90,15 +94,14 @@ and SOAR automation:
 - Two Analytics Rules deployed:
   - `Entra ID - User Account Creation` (MITRE T1136.003)
   - `Entra ID - Role Assignment` (MITRE T1098.003)
+- One hunting query (Service Principal Creation, MITRE T1098.001)
 - Detections validated against controlled event generation
 - First incident reviewed end-to-end in the Defender portal
 - SOAR Playbook deployed: automated email notification on incident
   creation, with dynamic incident metadata in the message body
+- Custom Workbook for SOC overview (5 tiles)
 
 Next milestones:
-- Windows Security Events ingestion via Windows VM
-- Custom Workbook for SOC executive dashboard
-- Architecture diagram (draw.io)
 - Lessons learned documentation
 - README v1.0 final release
 
