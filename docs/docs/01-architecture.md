@@ -104,3 +104,33 @@ free trial period is expected to remain near zero.
 - Windows VM (B1s/B2s with auto-shutdown) for Windows Security Events
 - Logic Apps playbooks for SOAR automation
 - Custom Workbooks for executive dashboards
+## Scope Decision: Identity-Focused Detection
+
+This lab focuses exclusively on identity-based threat detection 
+in Microsoft Entra ID. The scope is intentional and grounded in 
+two principles:
+
+1. **Threat landscape priority.** According to recent Microsoft 
+   Digital Defense Reports, identity compromise is the most 
+   common initial access vector in cloud environments. Detecting 
+   account creation, role assignment and identity manipulation 
+   delivers the highest ROI per detection rule.
+
+2. **Depth over breadth.** Rather than ingest many low-signal 
+   data sources superficially, the lab prioritises mature, 
+   well-tuned detection rules on a single high-value source, 
+   with full validation, entity mapping and SOAR automation 
+   wired end-to-end.
+
+This is consistent with how mature SOCs prioritise detection 
+engineering effort: identity-first, with additional data sources 
+added incrementally as the detection backlog matures.
+
+### Data sources intentionally out of scope (and why)
+
+| Source | Reason for exclusion |
+|---|---|
+| Windows Security Events | Requires running VM; cost beyond the lab budget. Future scope. |
+| Microsoft 365 Defender (full XDR) | Requires E5 licensing. Future scope when running in an enterprise tenant. |
+| Sign-in Logs | Requires Entra ID P1/P2 licence (paid). Documented as architectural limitation. |
+| Azure Activity Logs | Available but skipped to keep the scope tightly focused on identity. |
