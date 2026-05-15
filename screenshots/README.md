@@ -23,6 +23,8 @@ order of the lab build-out.
 | 08 | 08-incident-details-view.png | Incident details: entities, timeline, MITRE mapping |
 | 09 | `09-analytics-rules-active.png` | Two Analytics Rules active covering Persistence (T1136) and Privilege Escalation (T1098) |
 | 10 | 10-playbook-email-notification.png | SOAR Playbook: automated email notification with incident details |
+| 11 | `11-hunting-query-validated.png` | Service Principal Creation hunting query (T1098.001) validated with controlled event |
+
 
 
 Screenshots are referenced from the corresponding documentation
