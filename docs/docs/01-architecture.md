@@ -1,109 +1,113 @@
 # Lab Architecture
 
-## Overview
+Microsoft Sentinel SOC Lab architecture, design decisions and 
+scope. This document describes how each component fits together 
+and why each choice was made.
 
-The lab is deployed on Microsoft Azure using a pay-as-you-go subscription
-with the Microsoft Sentinel free trial active (10 GB/day ingestion quota
-for 31 days).
+## End-to-end flow
 
-The design prioritises three constraints:
+```mermaid
+flowchart LR
+    A[Microsoft Entra ID<br/>Audit Logs] -->|Data Connector| B[Log Analytics Workspace<br/>lab-sentinel]
+    B --> C[Microsoft Sentinel]
+    C --> D[Analytics Rules]
+    D --> D1[User Account Creation<br/>T1136.003 · Low]
+    D --> D2[Role Assignment<br/>T1098.003 · Medium]
+    D1 --> E[Incident<br/>+ Entity Mapping]
+    D2 --> E
+    E --> F[Defender XDR Portal]
+    E -->|Trigger| G[Playbook<br/>Logic App]
+    G --> H[Email Notification<br/>Outlook.com]
 
-1. **Zero unnecessary cost** — only free or trial-included services
-2. **Realistic data** — actual Entra ID tenant logs, not only simulated data
-3. **Reproducibility** — every component documented for redeployment
-
-## High-level architecture
-
+    style A fill:#0078D4,color:#fff
+    style B fill:#50A0DC,color:#fff
+    style C fill:#1F6FEB,color:#fff
+    style E fill:#FF6B6B,color:#fff
+    style G fill:#FFB84D,color:#fff
+    style H fill:#4CAF50,color:#fff
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Microsoft Azure                          │
-│                                                             │
-│  ┌──────────────────────┐                                   │
-│  │ Resource Group:      │                                   │
-│  │ rg-lab-sentinel      │                                   │
-│  │                      │                                   │
-│  │  ┌───────────────┐   │                                   │
-│  │  │ Log Analytics │   │   ┌──────────────────────────┐    │
-│  │  │ Workspace:    │◄──┼───┤ Microsoft Entra ID       │    │
-│  │  │ lab-sentinel  │   │   │ (Audit Logs)             │    │
-│  │  └───────┬───────┘   │   └──────────────────────────┘    │
-│  │          │           │                                   │
-│  │  ┌───────▼───────┐   │   ┌──────────────────────────┐    │
-│  │  │ Microsoft     │◄──┼───┤ Training Lab solution    │    │
-│  │  │ Sentinel      │   │   │ (sample data)            │    │
-│  │  └───────┬───────┘   │   └──────────────────────────┘    │
-│  │          │           │                                   │
-│  │  ┌───────▼────────┐  │                                   │
-│  │  │ Analytics      │  │                                   │
-│  │  │ Rules (KQL)    │  │                                   │
-│  │  └───────┬────────┘  │                                   │
-│  │          │           │                                   │
-│  │  ┌───────▼────────┐  │                                   │
-│  │  │ Incidents +    │  │                                   │
-│  │  │ Playbooks      │  │                                   │
-│  │  └────────────────┘  │                                   │
-│  └──────────────────────┘                                   │
-│                                                             │
-│   Unified portal: security.microsoft.com (Defender XDR)     │
-└─────────────────────────────────────────────────────────────┘
-```
+
+The diagram represents the complete pipeline: from Entra ID audit 
+events to the final SOAR notification. Each component is described 
+in detail below.
 
 ## Components
 
-### Resource Group: rg-lab-sentinel
+### Resource Group
 
-Logical container for all lab resources. Located in West Europe region
-for latency proximity. Deletion of this resource group cleanly tears
-down the entire lab.
+All lab resources are grouped under a single Resource Group called 
+`rg-lab-sentinel`, located in the `West Europe` region. Grouping 
+everything in one Resource Group makes cleanup trivial: deleting 
+the Resource Group removes the entire lab in a single operation.
 
-### Log Analytics Workspace: lab-sentinel
+### Log Analytics Workspace
 
-The data store for all logs ingested into Sentinel. Configured with:
+The `lab-sentinel` workspace is the underlying log storage for 
+Microsoft Sentinel. All ingested logs are queryable via KQL against 
+this workspace. Sentinel does not store data of its own: it operates 
+as a SIEM layer on top of Log Analytics.
 
-- Pay-as-you-go pricing tier (free trial active)
-- 30-day retention by default
-- Region: West Europe
+Retention is left at the default 30 days, which is sufficient for 
+lab purposes. In production, retention should be aligned with the 
+organization's compliance requirements (typically 90 days or more 
+for security logs).
 
 ### Microsoft Sentinel
 
-Cloud-native SIEM and SOAR platform deployed on top of the Log Analytics
-Workspace. Free trial active providing 10 GB/day ingestion quota.
+Microsoft Sentinel is enabled on top of the `lab-sentinel` workspace. 
+This provides the SIEM and SOAR capabilities: Analytics Rules, 
+Incidents, Hunting, Workbooks, Playbooks and Threat Intelligence.
 
-### Microsoft Entra ID Connector
+The free trial covers 10 GB per day of ingestion until 13 June 2026. 
+After that, lab-scale usage is expected to cost a few cents per day.
 
-Currently ingesting **Audit Logs** only.
+### Defender XDR portal integration
 
-**Architectural decision:** Sign-in Logs require Entra ID P1 or P2
-license, which is a paid SKU and outside the scope of a zero-cost lab.
-Audit Logs provide sufficient signal to practise detections around
-privileged role changes, user lifecycle events and configuration drift,
-which are common SC-200 exam scenarios.
+The Defender XDR portal (`security.microsoft.com`) is configured to 
+use `lab-sentinel` as its Primary Workspace. From this point on, all 
+Sentinel functionality (Incidents, Analytics, Hunting) is accessible 
+from the unified Defender portal as well as from the Azure Portal.
 
-### Training Lab solution
+In production SOC environments, analysts increasingly work from the 
+unified Defender portal rather than the technical Azure Portal. The 
+lab reflects this convention.
 
-Microsoft-provided package that ingests sample data and pre-built
-incidents into the workspace for hands-on training without requiring
-a production-scale data source.
+### Data Connector: Microsoft Entra ID
 
-### Portal: Microsoft Defender (security.microsoft.com)
+The Entra ID data connector ingests Audit Logs into the workspace. 
+Sign-in Logs are excluded because they require an Entra ID P1 or P2 
+license, which is out of scope for this lab.
 
-As of 2025-2026, Microsoft has unified the SIEM (Sentinel) and XDR
-(Defender) experiences in a single portal. The lab workspace is
-connected to the Defender portal as the primary workspace, enabling
-the converged experience for incidents and hunting.
+### Analytics Rules
 
-## Cost controls
+Two scheduled Analytics Rules are deployed:
 
-A monthly budget of **€10** is configured on the subscription with an
-alert at 80% to prevent unexpected charges. With only Entra ID Audit
-Logs and Training Lab data flowing, actual monthly cost during the
-free trial period is expected to remain near zero.
+- `Entra ID - User Account Creation` (MITRE T1136.003, Severity Low)
+- `Entra ID - Role Assignment` (MITRE T1098.003, Severity Medium)
 
-## Future additions
+Both rules run every hour, looking back at the last hour of data. 
+Entity mapping enables cross-rule correlation: when both rules fire 
+against the same `TargetUser`, Sentinel automatically links the 
+resulting incidents.
 
-- Windows VM (B1s/B2s with auto-shutdown) for Windows Security Events
-- Logic Apps playbooks for SOAR automation
-- Custom Workbooks for executive dashboards
+### Hunting query
+
+A third query, `Service Principal Creation` (MITRE T1098.001), is 
+maintained as a hunting query rather than a deployed rule. It 
+surfaces OAuth application registration events, a common cloud 
+persistence technique, and is intended for analyst-driven review.
+
+### SOAR Playbook
+
+A Logic App named `pb-notify-sentinel-incident` is configured to 
+trigger on incident creation. When triggered, it sends an email 
+notification to a dedicated mailbox with dynamic incident metadata: 
+Title, Severity, Status and Creation Time.
+
+In production, this notification step would be replaced or augmented 
+with Teams alerts, ticketing system integration, automatic 
+containment actions or threat intelligence enrichment.
+
 ## Scope Decision: Identity-Focused Detection
 
 This lab focuses exclusively on identity-based threat detection 
