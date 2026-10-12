@@ -129,9 +129,9 @@ time**.
 
 ## What comes next
 
-- Splunk SOC Home Lab (planned: August-October 2026)
-- Detection-as-Code with Sigma rules (planned: November 2026)
-- Active Directory Attack and Defense lab (planned: 2027)
+- Detection-as-Code with Sigma rules
+- Active Directory attack and defense lab (purple team)
+- Splunk-based investigations aligned with BTL1
 
 These will reuse the patterns established here: scope first, 
 controlled events, entity mapping, version control, and an 

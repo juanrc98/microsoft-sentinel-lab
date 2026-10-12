@@ -1,7 +1,7 @@
 # Microsoft Sentinel SOC Lab
 
 > Hands-on Microsoft Sentinel deployment in Azure for SOC operations,
-> threat detection with KQL, and SC-200 certification preparation.
+> threat detection with KQL, and SC-200-aligned skills.
 
 ![Azure](https://img.shields.io/badge/Azure-0078D4?style=flat&logo=microsoft-azure&logoColor=white)
 ![Sentinel](https://img.shields.io/badge/Microsoft%20Sentinel-00BCF2?style=flat&logo=microsoft&logoColor=white)
@@ -14,8 +14,8 @@ of a Microsoft Sentinel SOC laboratory built on Microsoft Azure. The lab
 is used for hands-on practice on detection engineering, KQL development,
 incident investigation and SOAR automation with Logic Apps.
 
-The project is part of my preparation for the **Microsoft SC-200:
-Security Operations Analyst** certification, scheduled for July 2026.
+The lab covers the core skills of the **Microsoft SC-200: Security
+Operations Analyst** exam scope: detection engineering, KQL and SOAR.
 
 ## Objectives
 
@@ -105,12 +105,11 @@ hunting and SOAR automation:
   lessons-learned retrospective all version-controlled
 
 This release marks the end of the initial build phase. Future commits 
-will extend the lab with additional data sources and detections as part 
-of ongoing SC-200 preparation (exam scheduled for July 2026).
+will extend the lab with additional data sources and detections.
 ## About me
 
-**Juan Rodríguez Castellano** — SOC Analyst transitioning to Cloud
-Security in Microsoft environments.
+**Juan Rodríguez Castellano** — Systems administrator and cybersecurity
+analyst (Blue Team) in Microsoft environments.
 
 [LinkedIn](https://www.linkedin.com/in/juan-rodriguez-castellano/) ·
-[Portfolio](https://juanrc98.github.io)
+[Portfolio](https://reiderer.dev)
